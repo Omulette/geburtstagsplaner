@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geburtstagsplaner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎉 Geburtstagsplaner</h1>
+            <p class="subtitle">Planen Sie Ihre perfekte Geburtstagsfeier</p>
+        </header>
+
+        <!-- Guest Slider -->
+        <section class="guests-section">
+            <div class="guests-card">
+                <h2>Anzahl der Gäste</h2>
+                <div class="slider-container">
+                    <input type="range" id="guestSlider" min="1" max="100" value="10" class="slider">
+                    <div class="guest-display">
+                        <span class="guest-count">10</span>
+                        <span class="guest-label">Gäste</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="overview">Übersicht</button>
+            <button class="tab-button" data-tab="recipes">Rezepte</button>
+            <button class="tab-button" data-tab="drinks">Getränke</button>
+            <button class="tab-button" data-tab="foods">Speisen</button>
+            <button class="tab-button" data-tab="shopping">Einkaufsliste</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <h3>📋 Rezepte</h3>
+                        <p id="recipeCount">0 Rezepte ausgewählt</p>
+                        <button class="quick-btn" onclick="switchTab('recipes')">Zum Rezepte-Manager</button>
+                    </div>
+                    <div class="overview-card">
+                        <h3>🍹 Getränke</h3>
+                        <p id="drinkCount">0 Getränke ausgewählt</p>
+                        <button class="quick-btn" onclick="switchTab('drinks')">Zum Getränke-Manager</button>
+                    </div>
+                    <div class="overview-card">
+                        <h3>🍽️ Speisen</h3>
+                        <p id="foodCount">0 Speisen ausgewählt</p>
+                        <button class="quick-btn" onclick="switchTab('foods')">Zum Speisen-Manager</button>
+                    </div>
+                    <div class="overview-card">
+                        <h3>🛒 Einkaufsliste</h3>
+                        <p id="shoppingCount">0 Artikel</p>
+                        <button class="quick-btn" onclick="switchTab('shopping')">Zur Einkaufsliste</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="exportToPDF()">📥 Als PDF exportieren</button>
+                    <button class="btn btn-secondary" onclick="importData()">📤 Daten importieren</button>
+                    <button class="btn btn-secondary" onclick="exportJSON()">💾 Daten speichern</button>
+                </div>
+            </div>
+
+            <!-- Recipes Tab -->
+            <div id="recipes" class="tab-content">
+                <div class="section-header">
+                    <h2>Rezepte verwalten</h2>
+                    <button class="btn btn-primary" onclick="openRecipeModal('new')">+ Neues Rezept</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="recipeSearch" placeholder="Rezepte durchsuchen..." class="search-input">
+                    <select id="recipeCategory" class="filter-select">
+                        <option value="">Alle Kategorien</option>
+                        <option value="appetizer">Vorspeise</option>
+                        <option value="main">Hauptgang</option>
+                        <option value="dessert">Nachtisch</option>
+                        <option value="snack">Snack</option>
+                    </select>
+                </div>
+
+                <div class="recipes-container" id="recipesContainer">
+                    <!-- Recipes will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Drinks Tab -->
+            <div id="drinks" class="tab-content">
+                <div class="section-header">
+                    <h2>Getränke verwalten</h2>
+                    <button class="btn btn-primary" onclick="openRecipeModal('new', 'drink')">+ Neues Getränk</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="drinkSearch" placeholder="Getränke durchsuchen..." class="search-input">
+                    <select id="drinkCategory" class="filter-select">
+                        <option value="">Alle Kategorien</option>
+                        <option value="hot">Heiß</option>
+                        <option value="cold">Kalt</option>
+                        <option value="alcoholic">Mit Alkohol</option>
+                        <option value="non-alcoholic">Ohne Alkohol</option>
+                    </select>
+                </div>
+
+                <div class="recipes-container" id="drinksContainer">
+                    <!-- Drinks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Foods Tab -->
+            <div id="foods" class="tab-content">
+                <div class="section-header">
+                    <h2>Speisen verwalten</h2>
+                    <button class="btn btn-primary" onclick="openRecipeModal('new', 'food')">+ Neue Speise</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="foodSearch" placeholder="Speisen durchsuchen..." class="search-input">
+                    <select id="foodCategory" class="filter-select">
+                        <option value="">Alle Kategorien</option>
+                        <option value="vegetarian">Vegetarisch</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="meat">Mit Fleisch</option>
+                        <option value="seafood">Fisch & Meeresfrüchte</option>
+                    </select>
+                </div>
+
+                <div class="recipes-container" id="foodsContainer">
+                    <!-- Foods will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Shopping List Tab -->
+            <div id="shopping" class="tab-content">
+                <div class="section-header">
+                    <h2>Einkaufsliste</h2>
+                    <button class="btn btn-secondary" onclick="generateShoppingList()">🔄 Liste aktualisieren</button>
+                    <button class="btn btn-secondary" onclick="printShoppingList()">🖨️ Drucken</button>
+                </div>
+
+                <div class="shopping-list-container" id="shoppingListContainer">
+                    <p class="empty-message">Wählen Sie Rezepte, Getränke und Speisen um die Einkaufsliste zu generieren.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe/Drink/Food Modal -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRecipeModal()">&times;</span>
+            <h2 id="modalTitle">Neues Rezept</h2>
+            
+            <form id="recipeForm">
+                <input type="hidden" id="recipeId">
+                <input type="hidden" id="recipeType" value="recipe">
+
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="recipeName" required placeholder="z.B. Pasta Carbonara">
+                </div>
+
+                <div class="form-group">
+                    <label>Kategorie *</label>
+                    <select id="recipeTypeCategory" required>
+                        <option value="">Wählen Sie eine Kategorie</option>
+                        <option value="appetizer">Vorspeise</option>
+                        <option value="main">Hauptgang</option>
+                        <option value="dessert">Nachtisch</option>
+                        <option value="snack">Snack</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="recipeDescription" placeholder="Kurze Beschreibung des Rezepts"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Zutaten *</label>
+                    <textarea id="recipeIngredients" required placeholder="Zutaten (eine pro Zeile)&#10;z.B.:&#10;500g Pasta&#10;200g Schinken&#10;4 Eier"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Zubereitung</label>
+                    <textarea id="recipeInstructions" placeholder="Schritt-für-Schritt Anleitung"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Zubereitungszeit (Minuten)</label>
+                    <input type="number" id="recipePrepTime" min="0" placeholder="z.B. 30">
+                </div>
+
+                <div class="form-group">
+                    <label>Portionen</label>
+                    <input type="number" id="recipeServings" min="1" value="4" placeholder="z.B. 4">
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeRecipeModal()">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFile" style="display: none;" accept=".json">
+
+    <script src="app.js"></script>
+</body>
+</html>
